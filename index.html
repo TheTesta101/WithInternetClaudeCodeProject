@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rubik's Tic-Tac-Toe</title>
+  <link rel="stylesheet" href="./style.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="scene"></canvas>
+
+  <!-- Top status bar -->
+  <header id="hud-top">
+    <div id="turn-indicator">
+      <span class="mark-badge" id="turn-mark">X</span>
+      <span id="turn-text">Player X</span>
+    </div>
+    <div id="phase-text">Place your mark</div>
+    <button id="restart-btn" title="Start a new game">Restart</button>
+  </header>
+
+  <!-- Move palette (only usable during the MOVE phase) -->
+  <section id="move-palette" aria-label="Cube moves">
+    <div class="palette-title">Make a move</div>
+    <div class="move-grid">
+      <button class="move-btn" data-move="U">U</button>
+      <button class="move-btn" data-move="U'">U&#39;</button>
+      <button class="move-btn" data-move="D">D</button>
+      <button class="move-btn" data-move="D'">D&#39;</button>
+      <button class="move-btn" data-move="L">L</button>
+      <button class="move-btn" data-move="L'">L&#39;</button>
+      <button class="move-btn" data-move="R">R</button>
+      <button class="move-btn" data-move="R'">R&#39;</button>
+      <button class="move-btn" data-move="F">F</button>
+      <button class="move-btn" data-move="F'">F&#39;</button>
+      <button class="move-btn" data-move="B">B</button>
+      <button class="move-btn" data-move="B'">B&#39;</button>
+    </div>
+  </section>
+
+  <!-- Help / hint -->
+  <footer id="hud-bottom">
+    Drag empty space to rotate the cube &middot; click a white sticker to place &middot; drag a sticker (or use the buttons) to make your move
+  </footer>
+
+  <!-- Winner overlay -->
+  <div id="winner-overlay" class="hidden">
+    <div class="winner-card">
+      <div id="winner-text">Player X wins!</div>
+      <button id="winner-restart">Play again</button>
+    </div>
+  </div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

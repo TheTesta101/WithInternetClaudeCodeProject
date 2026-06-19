@@ -21,30 +21,30 @@ Then open <http://localhost:8000> in a modern browser.
 
 Two players share one screen. **Player 1 is X**, **Player 2 is O**.
 
-Each turn has two mandatory steps:
+On your turn:
 
-1. **Place your mark.** Click any empty white sticker — your X or O is painted
-   onto it.
-2. **Make one cube move.** Perform exactly one quarter-turn of a face, either by
-   **dragging a layer of the cube** or by clicking one of the **move buttons**
-   (U, U′, D, D′, L, L′, R, R′, F, F′, B, B′).
+- **Placing your mark is your move.** Click any empty white sticker — your X or O
+  is painted onto it, and your turn ends. Play passes to the other player.
+- **Turning a face is optional.** Before you place, you may turn faces of the
+  cube as much as you like — by **dragging a layer** or clicking the **move
+  buttons** (U, U′, D, D′, L, L′, R, R′, F, F′, B, B′). You're never required to.
 
 Because marks are painted on the stickers, they travel with the cube when a face
-turns. Play then passes to the other player.
+turns.
 
 ### Winning
 
 Get **3 of your marks in a line** — row, column, or diagonal — on any single
-3×3 face. Victory is checked **only after your cube move finishes**, so the
-rotation itself can complete (or break) a line. Watch out: a careless turn can
-even hand your opponent a line.
+3×3 face. A win is checked after every change to the board (a placement *or* an
+optional face turn), so a turn can complete a line — but watch out, a careless
+turn can also hand your opponent one.
 
 ## Controls
 
 - **Rotate / inspect the cube:** drag empty space around the cube.
-- **Place a mark:** click an empty sticker (during the *place* phase).
-- **Turn a layer:** drag a sticker in the direction you want it to rotate
-  (during the *move* phase), or use the move buttons.
+- **Place a mark (ends your turn):** click an empty sticker.
+- **Turn a layer (optional):** drag a sticker in the direction you want it to
+  rotate, or use the move buttons.
 - **Restart:** the button in the top bar or on the winner screen.
 
 ## Project structure

@@ -53,7 +53,6 @@ scene.add(cubeRoot);
 // ---------- Game state ----------
 const state = {
   currentPlayer: "X",
-  phase: "PLACE",      // "PLACE" | "MOVE"
   gameOver: false,
   winner: null,
 };
@@ -312,29 +311,29 @@ function checkWin() {
 }
 
 // ---------- Turn flow ----------
+function endGame(w) {
+  state.gameOver = true;
+  state.winner = w;
+  showWinner(w);
+}
+
+// Placing a mark IS the move: it ends the active player's turn.
 function placeMark(sticker) {
   sticker.userData.mark = state.currentPlayer;
   drawSticker(sticker.userData);
-  state.phase = "MOVE";
+  const w = checkWin();
+  if (w) endGame(w);
+  else state.currentPlayer = state.currentPlayer === "X" ? "O" : "X";
   updateHUD();
 }
 
+// Turning a face is OPTIONAL and does not end the turn, but it can move
+// marks into (or out of) a winning line, so we still check for a win after.
 async function performMove(axis, layerCoord, dir) {
-  if (state.phase !== "MOVE" || isAnimating || state.gameOver) return;
+  if (isAnimating || state.gameOver) return;
   await turnLayer(axis, layerCoord, dir);
-  afterMove();
-}
-
-function afterMove() {
   const w = checkWin();
-  if (w) {
-    state.gameOver = true;
-    state.winner = w;
-    showWinner(w);
-  } else {
-    state.currentPlayer = state.currentPlayer === "X" ? "O" : "X";
-    state.phase = "PLACE";
-  }
+  if (w) endGame(w);
   updateHUD();
 }
 
@@ -373,8 +372,9 @@ renderer.domElement.addEventListener(
       ptr.worldNormal = snapVec(
         hit.object.userData.localNormal.clone().applyQuaternion(ptr.cubie.quaternion)
       );
-      // Only steal the gesture from orbit when a layer turn is actually allowed.
-      ptr.canTurn = state.phase === "MOVE" && !isAnimating && !state.gameOver;
+      // A drag on a sticker turns a layer (optional move); a plain click on it
+      // places a mark. Both are available whenever it's a live turn.
+      ptr.canTurn = !isAnimating && !state.gameOver;
       controls.enabled = !ptr.canTurn;
     } else {
       ptr.sticker = null;
@@ -403,8 +403,7 @@ window.addEventListener("pointermove", (e) => {
 window.addEventListener("pointerup", () => {
   if (ptr.down && ptr.sticker && !ptr.consumed) {
     const dist = Math.hypot(ptr.lastX - ptr.startX, ptr.lastY - ptr.startY);
-    if (dist < DRAG_THRESHOLD &&
-        state.phase === "PLACE" && !isAnimating && !state.gameOver &&
+    if (dist < DRAG_THRESHOLD && !isAnimating && !state.gameOver &&
         !ptr.sticker.userData.mark) {
       placeMark(ptr.sticker);
     }
@@ -469,7 +468,7 @@ moveButtons.forEach((btn) => {
 });
 
 function updatePaletteEnabled() {
-  const enabled = state.phase === "MOVE" && !isAnimating && !state.gameOver;
+  const enabled = !isAnimating && !state.gameOver;
   palette.classList.toggle("disabled", !enabled);
   moveButtons.forEach((b) => (b.disabled = !enabled));
 }
@@ -478,8 +477,7 @@ function updateHUD() {
   turnMark.textContent = state.currentPlayer;
   turnMark.classList.toggle("o", state.currentPlayer === "O");
   turnText.textContent = "Player " + state.currentPlayer;
-  phaseText.textContent =
-    state.phase === "PLACE" ? "Place your mark on an empty sticker" : "Make one cube move";
+  phaseText.textContent = "Click a sticker to place your mark (turning the cube is optional)";
   updatePaletteEnabled();
 }
 
@@ -491,7 +489,6 @@ function showWinner(w) {
 function restart() {
   buildCube();
   state.currentPlayer = "X";
-  state.phase = "PLACE";
   state.gameOver = false;
   state.winner = null;
   isAnimating = false;
